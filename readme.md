@@ -49,68 +49,81 @@ Para garantir a reprodutibilidade exata do ambiente, o projeto foi containerizad
 - **Docker Compose**
 
 
-
 ## 💻 Como Executar o Projeto
 
 ### 1. Clone o repositório
-```bash
-git clone [https://github.com/RodrigoAB93/desafio-tecnico-a3data-engenheiro-ml.git](https://github.com/RodrigoAB93/desafio-tecnico-a3data-engenheiro-ml.git)
-cd desafio-tecnico-a3data-engenheiro-ml
 
+```bash
+git clone https://github.com/RodrigoAB93/desafio-tecnico-a3data-engenheiro-ml.git
+cd desafio-tecnico-a3data-engenheiro-ml
 ```
 
-### 2. Inicie os containers
+### 2. Crie e ative o ambiente virtual
+
+**Linux / macOS**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows (PowerShell)**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Instale as dependências do projeto:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Inicie os containers Docker
 
 Suba os serviços definidos no `docker-compose.yml`:
 
 ```bash
-docker-compose up -d
-
+docker compose up -d
 ```
 
-### 3. Inicie o Servidor (Uvicorn)
-
-Como o servidor ASGI roda em um processo separado, após os containers estarem ativos, execute o **Uvicorn** para iniciar a API:
+> Caso utilize uma versão mais antiga do Docker Compose, utilize:
 
 ```bash
- uvicorn app.main:app --reload --port 8080 
+docker-compose up -d
 ```
 
-### 4. Baixe o modelo
+### 4. Baixe o modelo do Ollama
 
-Em outro terminal, baixe o modelo (`llama3`) no serviço Ollama:
+Após o container estar em execução, faça o download do modelo utilizado pela aplicação:
 
 ```bash
 docker exec -it incident-extractor-ollama-1 ollama pull llama3
-
 ```
 
-### 5. Executando os Testes
+### 5. Inicie o servidor da API (Uvicorn)
 
-Para rodar a suíte de testes (`pytest`) dentro do container da API:
+Com o Ollama em execução, inicie a API:
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+### 6. Execute os testes automatizados
+
+Para validar o funcionamento da aplicação, execute:
 
 ```bash
 pytest
-
 ```
-
-
-### 6. Executando os Testes Automatizados
-
-Para rodar a suíte de testes (`pytest`) dentro do container da API e garantir que tudo está funcionando corretamente:
-
-```bash
-pytest
-
-```
----
 
 ## 📚 Documentação Interativa
 
-Após iniciar os containers, acesse a documentação gerada automaticamente:
+Após iniciar a aplicação, acesse:
 
-* **Swagger UI:** `http://localhost:8000/docs`
-* **OpenAPI JSON:** `http://localhost:8000/openapi.json`
+- **Swagger UI:** http://localhost:8000/docs
+- **OpenAPI JSON:** http://localhost:8000/openapi.json
 
 ---
 
